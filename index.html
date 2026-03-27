@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Претензионная работа СибЭМ — Приморская ГРЭС 2025</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f1117;--bg2:#1a1d27;--bg3:#242836;--bg4:#2e3348;
+  --text:#e8eaf0;--text2:#9ea3b5;--text3:#6b7086;
+  --blue:#4a7cff;--blue2:#3366ee;--blue-bg:rgba(74,124,255,.12);
+  --gold:#d4a44a;--gold-bg:rgba(212,164,74,.10);
+  --red:#e85454;--red-bg:rgba(232,84,84,.10);
+  --green:#3ec97a;--green-bg:rgba(62,201,122,.10);
+  --orange:#e8943a;--orange-bg:rgba(232,148,58,.10);
+  --purple:#9b6dff;--purple-bg:rgba(155,109,255,.10);
+  --cyan:#38c8d4;--cyan-bg:rgba(56,200,212,.10);
+  --radius:12px;--shadow:0 4px 24px rgba(0,0,0,.4);
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+.header{text-align:center;padding:40px 20px 20px;background:linear-gradient(180deg,#181c28 0%,var(--bg) 100%)}
+.header h1{font-size:1.6rem;font-weight:600;letter-spacing:.02em;color:var(--text)}
+.header .sub{color:var(--text2);font-size:.95rem;margin-top:6px}
+.header .date{color:var(--gold);font-size:.82rem;margin-top:4px;letter-spacing:.04em}
+.container{max-width:1100px;margin:0 auto;padding:0 20px 60px}
+
+/* FUNNEL */
+.funnel{display:flex;flex-direction:column;align-items:center;gap:0;position:relative}
+.funnel-row{display:flex;align-items:stretch;justify-content:center;width:100%;gap:16px;position:relative}
+.funnel-row.main-row{margin-bottom:0}
+.connector{width:2px;height:32px;background:linear-gradient(180deg,var(--blue),var(--blue2));margin:0 auto;position:relative}
+.connector::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--blue2)}
+
+/* MAIN BLOCKS */
+.fblock{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);padding:20px 28px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;text-align:center;min-width:200px}
+.fblock:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 8px 32px rgba(74,124,255,.15)}
+.fblock .num{font-size:2.4rem;font-weight:700;line-height:1.1}
+.fblock .label{font-size:.85rem;color:var(--text2);margin-top:4px;line-height:1.3}
+.fblock .sum-label{font-size:.72rem;color:var(--text3);margin-top:6px}
+.fblock::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+
+.fblock.level0{max-width:680px;width:100%}.fblock.level0::before{background:linear-gradient(90deg,var(--blue),var(--cyan))}
+.fblock.level0 .num{color:var(--blue)}
+
+.fblock.level1{max-width:560px;width:100%}.fblock.level1::before{background:linear-gradient(90deg,var(--orange),var(--red))}
+.fblock.level1 .num{color:var(--orange)}
+
+.fblock.level2{max-width:440px;width:100%}.fblock.level2::before{background:linear-gradient(90deg,var(--gold),var(--orange))}
+.fblock.level2 .num{color:var(--gold)}
+
+/* SIDE BLOCKS */
+.side-group{display:flex;flex-direction:column;gap:8px;flex-shrink:0;min-width:0}
+.side-group.left{align-items:flex-end}
+.side-group.right{align-items:flex-start}
+.sblock{background:var(--bg2);border:1px solid var(--bg4);border-radius:10px;padding:12px 16px;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:12px;min-width:180px;max-width:280px}
+.sblock:hover{border-color:var(--blue);transform:translateX(2px);box-shadow:var(--shadow)}
+.sblock .snum{font-size:1.5rem;font-weight:700;min-width:36px;text-align:center}
+.sblock .slabel{font-size:.78rem;color:var(--text2);line-height:1.3}
+.sblock.green .snum{color:var(--green)}
+.sblock.orange .snum{color:var(--orange)}
+.sblock.red .snum{color:var(--red)}
+.sblock.blue .snum{color:var(--blue)}
+.sblock.purple .snum{color:var(--purple)}
+.sblock.cyan .snum{color:var(--cyan)}
+.sblock.gold .snum{color:var(--gold)}
+
+/* SIDE CONNECTORS */
+.side-connector{position:absolute;top:50%;width:40px;height:2px;background:var(--bg4)}
+.side-connector.left{right:100%;margin-right:8px}
+.side-connector.right{left:100%;margin-left:8px}
+
+/* RESULT ROW */
+.result-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px;width:100%;max-width:680px}
+.rblock{background:var(--bg2);border:1px solid var(--bg4);border-radius:10px;padding:16px 20px;cursor:pointer;transition:all .25s;text-align:center;flex:1;min-width:160px}
+.rblock:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:var(--shadow)}
+.rblock .rnum{font-size:1.8rem;font-weight:700}
+.rblock .rlabel{font-size:.78rem;color:var(--text2);margin-top:2px}
+.rblock .rsub{font-size:.68rem;color:var(--text3);margin-top:4px}
+.rblock.lawsuit{border-left:3px solid var(--red)}.rblock.lawsuit .rnum{color:var(--red)}
+.rblock.wait{border-left:3px solid var(--orange)}.rblock.wait .rnum{color:var(--orange)}
+.rblock.done{border-left:3px solid var(--green)}.rblock.done .rnum{color:var(--green)}
+
+/* LAYOUT HELPERS */
+.level-wrap{display:flex;align-items:center;justify-content:center;gap:24px;width:100%}
+.level-wrap .center-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+@media(max-width:900px){
+  .level-wrap{flex-direction:column;gap:12px}
+  .side-group{flex-direction:row;flex-wrap:wrap;justify-content:center}
+  .sblock{min-width:140px}
+}
+
+/* SECTION TITLE */
+.section-title{color:var(--text3);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;text-align:center;margin:28px 0 8px}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;justify-content:center;align-items:flex-start;padding:40px 16px;overflow-y:auto}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--bg4);border-radius:16px;max-width:800px;width:100%;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 16px 64px rgba(0,0,0,.6)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--bg4);flex-shrink:0}
+.modal-header h2{font-size:1.1rem;font-weight:600;color:var(--text)}
+.modal-header .count-badge{background:var(--blue-bg);color:var(--blue);font-size:.8rem;padding:4px 10px;border-radius:20px;font-weight:600}
+.modal-close{width:32px;height:32px;border:none;background:var(--bg3);color:var(--text2);border-radius:8px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.modal-close:hover{background:var(--red);color:#fff}
+.modal-body{overflow-y:auto;padding:16px 24px 24px;flex:1}
+
+/* TABLE IN MODAL */
+.mtable{width:100%;border-collapse:collapse;font-size:.82rem}
+.mtable th{text-align:left;padding:8px 10px;color:var(--text3);font-weight:500;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid var(--bg4);position:sticky;top:0;background:var(--bg2)}
+.mtable td{padding:10px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
+.mtable tr:hover td{background:rgba(255,255,255,.03)}
+.mtable .contractor{color:var(--text);font-weight:500}
+.mtable .contract-num{color:var(--blue);font-size:.78rem}
+.mtable .detail{color:var(--text2);font-size:.76rem;margin-top:3px;line-height:1.4}
+.mtable .status-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:500}
+.tag-red{background:var(--red-bg);color:var(--red)}
+.tag-green{background:var(--green-bg);color:var(--green)}
+.tag-orange{background:var(--orange-bg);color:var(--orange)}
+.tag-blue{background:var(--blue-bg);color:var(--blue)}
+.tag-purple{background:var(--purple-bg);color:var(--purple)}
+
+/* TOOLTIP */
+.hint{color:var(--text3);font-size:.7rem;text-align:center;margin-top:16px;font-style:italic}
+
+/* SEARCH */
+.search-wrap{max-width:480px;margin:20px auto 0;position:relative}
+.search-input{width:100%;padding:12px 16px 12px 42px;background:var(--bg2);border:1px solid var(--bg4);border-radius:10px;color:var(--text);font-size:.9rem;outline:none;transition:border-color .2s}
+.search-input::placeholder{color:var(--text3)}
+.search-input:focus{border-color:var(--blue)}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:1rem;pointer-events:none}
+.search-results{position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--bg2);border:1px solid var(--bg4);border-radius:10px;max-height:400px;overflow-y:auto;z-index:100;display:none;box-shadow:var(--shadow)}
+.search-results.active{display:block}
+.sr-item{padding:10px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s}
+.sr-item:hover{background:rgba(255,255,255,.05)}
+.sr-item:last-child{border-bottom:none}
+.sr-contractor{font-weight:500;font-size:.85rem;color:var(--text)}
+.sr-contract{font-size:.76rem;color:var(--blue);margin-top:2px}
+.sr-category{display:inline-block;padding:1px 6px;border-radius:3px;font-size:.65rem;font-weight:500;margin-top:3px}
+.sr-detail{font-size:.72rem;color:var(--text2);margin-top:3px;line-height:1.3}
+.sr-empty{padding:16px;text-align:center;color:var(--text3);font-size:.85rem}
+
+/* LEGEND */
+.legend{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:32px;padding-top:20px;border-top:1px solid var(--bg3)}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--text3)}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Претензионная работа АО «СибЭР» (СибЭМ)</h1>
+  <div class="sub">Приморская ГРЭС — договоры подряда 2025 г.</div>
+  <div class="date">Данные по состоянию на 26 марта 2026 г.</div>
+</div>
+
+<div class="container">
+  <div class="search-wrap">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" class="search-input" id="searchInput" placeholder="Поиск по контрагенту или номеру договора..." oninput="doSearch(this.value)" onfocus="if(this.value.length>=2)doSearch(this.value)">
+    <div class="search-results" id="searchResults"></div>
+  </div>
+  <div class="hint">Нажмите на любой блок для просмотра деталей по договорам</div>
+
+  <div class="funnel" style="margin-top:24px">
+
+    <!-- LEVEL 0: Total -->
+    <div class="level-wrap">
+      <div class="center-col">
+        <div class="fblock level0" onclick="openModal('total')">
+          <div class="num">129</div>
+          <div class="label">Договоров подряда за 2025 г.</div>
+          <div class="sum-label">Сумма договоров: 9,72 млрд руб.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <!-- LEVEL 1: Violations -->
+    <div class="level-wrap">
+      <div class="side-group left">
+        <div class="sblock green" onclick="openModal('completed')">
+          <div class="snum">22</div>
+          <div class="slabel">Исполнены<br>без нарушений<br><span style="color:var(--text3);font-size:.68rem">860,9 млн руб.</span></div>
+        </div>
+        <div class="sblock purple" onclick="openModal('terminated')">
+          <div class="snum">5</div>
+          <div class="slabel">Расторгнуты<br>по соглашению<br><span style="color:var(--text3);font-size:.68rem">507,9 млн руб.</span></div>
+        </div>
+        <div class="sblock cyan" onclick="openModal('active')">
+          <div class="snum">6</div>
+          <div class="slabel">Действующие<br>без нарушений<br><span style="color:var(--text3);font-size:.68rem">473,8 млн руб.</span></div>
+        </div>
+      </div>
+      <div class="center-col">
+        <div class="fblock level1" onclick="openModal('violations')">
+          <div class="num">96</div>
+          <div class="label">Договоров с нарушениями сроков</div>
+          <div class="sum-label">74,4% от общего количества · Сумма: 7,88 млрд руб.</div>
+        </div>
+      </div>
+      <div class="side-group right" style="visibility:hidden">
+        <div class="sblock" style="opacity:0"><div class="snum">0</div></div>
+      </div>
+    </div>
+
+    <div class="connector"></div>
+
+
+    <!-- LEVEL 2: Claims -->
+    <div class="level-wrap">
+      <div class="side-group left">
+        <div class="sblock gold" onclick="openModal('by_fact')">
+          <div class="snum">35</div>
+          <div class="slabel">Закрыты по фактическим<br>объёмам<br><span style="color:var(--text3);font-size:.68rem">1,89 млрд руб.</span></div>
+        </div>
+        <div class="sblock orange" onclick="openModal('customer_fault')">
+          <div class="snum">17</div>
+          <div class="slabel">Встречное неисполнение<br>со стороны Заказчика<br><span style="color:var(--text3);font-size:.68rem">1,05 млрд руб.</span></div>
+        </div>
+      </div>
+      <div class="center-col">
+        <div class="fblock level2" onclick="openModal('claims')">
+          <div class="num">19</div>
+          <div class="label">Претензий заявлено</div>
+          <div class="sum-label">19,8% от числа нарушений · Сумма претензий: 139,9 млн руб.</div>
+        </div>
+      </div>
+      <div class="side-group right">
+        <div class="sblock red" onclick="openModal('no_sz')">
+          <div class="snum">14</div>
+          <div class="slabel">Нет оформленной СЗ<br>о претензионной работе<br><span style="color:var(--text3);font-size:.68rem">959,0 млн руб.</span></div>
+        </div>
+        <div class="sblock blue" onclick="openModal('need_ds')">
+          <div class="snum">10</div>
+          <div class="slabel">Необходимо ДС на<br>продление/увеличение<br><span style="color:var(--text3);font-size:.68rem">2,53 млрд руб.</span></div>
+        </div>
+        <div class="sblock purple" onclick="openModal('prep_term')">
+          <div class="snum">1</div>
+          <div class="slabel">Готовится расторжение<br>по соглашению<br><span style="color:var(--text3);font-size:.68rem">44,2 млн руб.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <div class="section-title">Результаты претензионной работы</div>
+
+    <!-- RESULT ROW -->
+    <div class="result-row">
+      <div class="rblock lawsuit" onclick="openModal('lawsuits')">
+        <div class="rnum">8</div>
+        <div class="rlabel">Инициированы иски</div>
+        <div class="rsub">6 дел в суде, 2 СЗ в работе</div>
+        <div class="rsub" style="color:var(--red);font-weight:500;margin-top:4px">30,6 млн руб.</div>
+      </div>
+      <div class="rblock wait" onclick="openModal('unresolved')">
+        <div class="rnum">8</div>
+        <div class="rlabel">Спор не урегулирован</div>
+        <div class="rsub">6 СЗ поступили в ЮУ в марте 2026</div>
+        <div class="rsub" style="color:var(--orange);font-weight:500;margin-top:4px">25,8 млн руб.</div>
+      </div>
+      <div class="rblock done" onclick="openModal('settled')">
+        <div class="rnum">3</div>
+        <div class="rlabel">Урегулировано досудебно</div>
+        <div class="rsub">Произведён зачёт</div>
+        <div class="rsub" style="color:var(--green);font-weight:500;margin-top:4px">11,5 млн руб.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Исполнены/урегулированы</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Претензии не требуются</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>Ожидание/в работе</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Требуют действий/иски</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Необходимо ДС</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>Расторжение</div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div style="display:flex;align-items:center;gap:12px">
+        <h2 id="modalTitle"></h2>
+        <span class="count-badge" id="modalCount"></span>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+const DATA = {
+  total: {
+    title: "Все договоры подряда за 2025 г.",
+    desc: "Общее количество договоров, действовавших по объекту Приморская ГРЭС в 2025 году.",
+    summary: [
+      {label:"С нарушениями сроков",count:96,pct:"74,4%",tag:"tag-red"},
+      {label:"Исполнены без нарушений",count:22,pct:"17,1%",tag:"tag-green"},
+      {label:"Действующие без нарушений",count:6,pct:"4,7%",tag:"tag-blue"},
+      {label:"Расторгнуты по соглашению",count:5,pct:"3,9%",tag:"tag-purple"},
+    ]
+  },
+  completed: {
+    title: "Договоры исполнены без нарушений",
+    items: [
+      {c:"ООО «СвязьСтройСервис-44»",n:"СИБЭРСИБЭМ-24/4117",s:"53 242 866",d:"Комплекс электромонтажных работ по модернизации электрооборудования, раскладка силовых и контрольных кабелей, замена КИПиА, бл. 5"},
+      {c:"ООО «Кип-Электромонтаж»",n:"СИБЭРСИБЭМ-24/4116",s:"54 157 116",d:"Комплекс электромонтажных работ по модернизации электрооборудования, бл. 8"},
+      {c:"ООО «ММК строй»",n:"СИБЭРСИБЭМ-24/2774",s:"345 791 810",d:"Комплекс строительно-монтажных работ по внутренней отделке главного корпуса"},
+      {c:"ООО «Кип-Электромонтаж»",n:"СИБЭРСИБЭМ-24/4567",s:"16 806 767",d:"Комплекс электромонтажных работ, бл. 7"},
+      {c:"АО «КМУ ГИДРОМОНТАЖ»",n:"СИБЭРСИБЭМ-24/4418",s:"56 836 484",d:"Монтаж опорных металлоконструкций и газоходов котлоагрегата ст. №10"},
+      {c:"ООО «КЭМ»",n:"СИБЭРСИБЭМ-24/4429",s:"41 244 648",d:"Тепловая изоляция и обмуровка оборудования котлоагрегата ст. №9"},
+      {c:"ИП Кудряшов Н.Г.",n:"СИБЭРСИБЭМ-25/3225",s:"2 500 000",d:"Токарная обработка поверхностей ТА №6"},
+      {c:"ИП Кудряшов Н.Г.",n:"СИБЭРСИБЭМ-25/4020",s:"3 046 000",d:"Токарная обработка поверхностей элементов паровой турбины ТА №3"},
+      {c:"ООО «Алькад»",n:"СИБЭРСИБЭМ-24/6217",s:"4 024 369",d:"Устройство трубопроводов ГЗУ"},
+      {c:"ООО «Энергосила»",n:"СИБЭРСИБЭМ-25/1783",s:"34 340 377",d:"Монтаж потолочного пароперегревателя над топкой"},
+      {c:"ООО «Энергосила»",n:"СИБЭРСИБЭМ-25/2180",s:"8 809 552",d:"Обвязка горелочных устройств котельного агрегата"},
+      {c:"ООО «Декор»",n:"СИБЭРСИБЭМ-22/6211",s:"51 293 480",d:"Демонтаж и монтаж тепловой изоляции котлоагрегатов ст. №1(1А) и ст. №8"},
+      {c:"АО «Силовые Машины»",n:"СИБЭРСИБЭМ-25/4799",s:"3 360 000",d:"Переоблопачивание лопаток ротора низкого давления паровой турбины"},
+      {c:"ООО «Спецстрой Дв»",n:"СИБЭРСИБЭМ-25/1496",s:"8 340 000",d:"Устройство разведочных скважин для водоснабжения"},
+      {c:"ООО «СтройМастер»",n:"СИБЭРСИБЭМ-25/6830",s:"800 001",d:"Обслуживание системы отопления блочных тепловых пунктов общежитий"},
+      {c:"ООО «Нордвег Инжиниринг»",n:"СИБЭРСИБЭМ-25/7129",s:"3 216 000",d:"Проточка вертикального разъема ЦНД ТА ст. №6"},
+      {c:"ООО «Энергосила»",n:"СИБЭРСИБЭМ-25/3498",s:"156 257 666",d:"Замена кубов ВЗП котлоагрегатов 2A и 2Б"},
+      {c:"ООО «ТЕХНОМОНТАЖ»",n:"СИБЭРСИБЭМ-25/2244",s:"16 813 723",d:"Ремонт вспомогательного оборудования и элементов основного оборудования"},
+    ]
+  },
+  terminated: {
+    title: "Договоры расторгнуты по соглашению сторон",
+    items: [
+      {c:"ООО «ЭМТ»",n:"СИБЭРСИБЭМ-24/2237",s:"115 871 800",d:"Демонтаж и монтаж железобетонных конструкций энергоблока №7. К работам не приступали. Расторгнут 16.05.2025, взаимных претензий нет."},
+      {c:"ООО «ЭМТ»",n:"СИБЭРСИБЭМ-24/4590",s:"21 200 583",d:"Антикоррозионная защита и тепловая изоляция системы регенерации энергоблока №7. Расторгнут 16.05.2025, взаимных претензий нет."},
+      {c:"ООО «ЭУТИТ-БАЗАЛЬТ»",n:"СИБЭРСИБЭМ-25/2550",s:"97 290 983",d:"Монтаж основного и вспомогательного оборудования вагоноопрокидывателя. Расторгнут 10.10.2025, взаимных претензий нет."},
+      {c:"ООО «ЭУТИТ-БАЗАЛЬТ»",n:"СИБЭРСИБЭМ-25/2552",s:"202 587 285",d:"СМР по технологическому оборудованию дробильного корпуса топливоподачи. Расторгнут 10.10.2025, взаимных претензий нет."},
+      {c:"ООО «ЭУТИТ-БАЗАЛЬТ»",n:"СИБЭРСИБЭМ-25/2437",s:"70 992 437",d:"Устройство конвейерного оборудования и узлов пересыпки топливоподачи. Расторгнут 10.10.2025, взаимных претензий нет."},
+    ]
+  },
+  active: {
+    title: "Действующие договоры без нарушений",
+    desc: "6 договоров находятся в стадии исполнения, нарушения на текущий момент не выявлены.",
+    items: [
+      {c:"ООО «Техно-Сфера»",n:"СИБЭРСИБЭМ-25/6677",s:"7 440 931",d:"Срок завершения 30.12.2025. Нарушение отсутствует"},
+      {c:"ООО «Компания КрасЭнергостройКомплекс»",n:"СИБЭРСИБЭМ-25/3469",s:"184 689 346",d:"Действующий. Претензионная работа не требуется"},
+      {c:"АО «СибИАЦ»",n:"СИБЭРСИБЭМ-25/2827",s:"91 920 880",d:"Срок 28.02.2026. Решается вопрос о продлении. Нарушение отсутствует"},
+      {c:"ООО «СИБПРОМ»",n:"СИБЭРСИБЭМ-25/7126",s:"32 068 224",d:"Срок завершения 30.10.2025. Нарушение отсутствует"},
+      {c:"АО «ХРМК»",n:"СИБЭРСИБЭМ-25/7593",s:"4 979 688",d:"Срок завершения 25.12.2025. Нарушение отсутствует"},
+      {c:"ООО «ЭИ»",n:"СИБЭРСИБЭМ-25/3572",s:"152 726 583",d:"Действующий до 30.04.2026. Нарушение отсутствует"},
+    ]
+  },
+  violations: {
+    title: "Договоры с нарушениями сроков",
+    desc: "96 договоров с выявленными нарушениями сроков выполнения работ. Распределение по категориям:",
+    summary: [
+      {label:"Закрыты по фактическим объёмам",count:35,pct:"36,5%",tag:"tag-green"},
+      {label:"Претензионно-исковая работа",count:19,pct:"19,8%",tag:"tag-red"},
+      {label:"Встречное неисполнение Заказчика",count:17,pct:"17,7%",tag:"tag-orange"},
+      {label:"Нет оформленной СЗ",count:14,pct:"14,6%",tag:"tag-purple"},
+      {label:"Необходимо ДС на продление/увеличение",count:10,pct:"10,4%",tag:"tag-blue"},
+      {label:"Готовится расторжение",count:1,pct:"1,0%",tag:"tag-purple"},
+    ]
+  },
+  claims: {
+    title: "Претензии заявлены (претензионно-исковая работа)",
+    items: [
+      {c:"ООО «Апекс Групп»",n:"СИБЭРСИБЭМ-24/4717",s:"119 862 181",d:"Комплекс СМР по устройству кровельного покрытия главного корпуса 200 МВт",claim:"Претензия 6.19.13-38104 от 10.04.2025: возврат аванса, пеня за нарушение сроков на сумму 46 362 691,55 руб.",result:"Отказной ответ от КА. Уведомление об отказе от договора.",status:"<a href='https://kad.arbitr.ru/Card?number=%D0%9033-13916%2F2025' target='_blank' style='color:var(--cyan)'>Дело А33-13916/2025</a>. Встречный иск удовлетворён решением от 11.12.2025. Апелляция 3ААС на 23.04.2026",tag:"tag-red"},
+      {c:"ООО «ЭМТ»",n:"СИБЭРСИБЭМ-23/2363",s:"59 881 292",d:"Монтаж систем гидрозолоудаления на энергоблоке №5",claim:"Претензия 6.19.13-63630 от 19.06.2025: возмещение стоимости строительных лесов, проценты на 11 246 376,97 руб.",result:"Частично возвращено имущество на 5 135 694,68 руб. (55%). Направлены уточнённые претензии.",status:"Произведён частичный зачёт 5 135 694,68. Требуется инициация искового производства",tag:"tag-orange"},
+      {c:"ООО «СибЭнергоСтрой»",n:"СИБЭРСИБЭМ-25/3562",s:"132 540 925",d:"Монтаж обмуровки и тепловой изоляции котлоагрегата ст. №10, энергоблок №7",claim:"Претензия 6.19.13-7400 от 29.01.2026: возврат аванса и штрафной неустойки на 7 100 000 руб.",result:"Ответ от КА не поступал",status:"<a href='https://kad.arbitr.ru/Card?number=%D0%9033-8199%2F2026' target='_blank' style='color:var(--cyan)'>Дело А33-8199/2026</a>. Предварительное заседание 14.05.2026",tag:"tag-red"},
+      {c:"ООО «СибЭнергоСтрой»",n:"СИБЭРСИБЭМ-25/3790",s:"85 575 022",d:"Антикоррозийная защита, тепловая изоляция и обмуровка оборудования",claim:"Претензия 6.19.13-128487 от 02.12.2025: возврат аванса, неустойка, отказ от договора на 6 150 000 руб.",result:"Ответ от КА не поступал",status:"<a href='https://kad.arbitr.ru/Card?number=%D0%9033-6895%2F2026' target='_blank' style='color:var(--cyan)'>Дело А33-6895/2026</a>. Исковое заявление оставлено без движения",tag:"tag-red"},
+      {c:"ООО «СибЭнергоСтрой»",n:"СИБЭРСИБЭМ-25/3835",s:"12 471 833",d:"Ремонт вспомогательного оборудования энергоблоков",claim:"Претензии от 17.11.2025: штраф 24 943,67 руб. + пеня 3 508 575,88 руб.",result:"Ответ от КА не поступал",status:"<a href='https://kad.arbitr.ru/Card?number=%D0%9033-2422%2F2026' target='_blank' style='color:var(--cyan)'>Дело А33-2422/2026</a>. Дата предварительного заседания не назначена",tag:"tag-red"},
+      {c:"ООО «Сэс»",n:"СИБЭРСИБЭМ-25/4480",s:"42 964 893",d:"Ремонт вспомогательного оборудования энергоблоков",claim:"Претензии от 17.11.2025: штраф 85 929,79 руб. + пеня 1 761 560,63 руб.",result:"Ответ от КА не поступал",status:"<a href='https://kad.arbitr.ru/Card?number=%D0%9033-2424%2F2026' target='_blank' style='color:var(--cyan)'>Дело А33-2424/2026</a>. Предварительное заседание 30.03.2026",tag:"tag-red"},
+      {c:"ООО «СтройМастер»",n:"СИБЭРСИБЭМ-25/154",s:"18 043 222",d:"Монтаж очистной установки «Дамба», КНС очищенных стоков",claim:"Претензия 6.19.13-114106 от 29.10.2025: пеня за нарушение сроков 1 750 192,53 руб.",result:"Ответ от КА не поступал",status:"СЗ от 23.03.2026 в ЮУ. Находится в работе у специалиста",tag:"tag-orange"},
+      {c:"ООО «АМА»",n:"СИБЭРСИБЭМ-25/4187",s:"13 954 790",d:"Антикоррозийная защита, тепловая изоляция и обмуровка оборудования",claim:"Претензия 6.19.13-115627 от 31.10.2025: штраф за нарушение сроков предоставления графика 281 864,37 руб.",result:"Ответ от КА не поступал",status:"СЗ от 24.03.2026 в ЮУ. Находится в работе у специалиста",tag:"tag-orange"},
+      {c:"ООО «ЗГРАДА Монолит»",n:"СИБЭРСИБЭМ-25/3660",s:"86 490 464",d:"Электромонтажные работы оборудования топливоподачи первого и второго вводов",claim:"Претензия 6.19.13-137136 от 19.12.2025: пеня за нарушение сроков 1 470 337,89 руб.",result:"Ответ от КА не поступал",status:"СЗ от 20.03.2026 в ЮУ. Находится в работе у специалиста",tag:"tag-orange"},
+      {c:"ООО «ЗГРАДА Монолит»",n:"СИБЭРСИБЭМ-25/1402",s:"121 134 109",d:"Электромонтажные работы по модернизации электрооборудования, раскладка кабелей",claim:"Претензия 6.19.13-133356 от 11.12.2025: штраф + возмещение ущерба 222 000 руб.",result:"Произведён зачёт: уведомление о зачёте №4058 от 21.01.2026 на сумму 222 000 руб.",status:"Урегулировано. Зачёт произведён, исковая работа не требуется",tag:"tag-green"},
+      {c:"ООО «ЭМТ»",n:"СИБЭРСИБЭМ-25/5779",s:"1 220 342",d:"Антикоррозионная защита на корпус МЗУ 3А и 3Б",claim:"Претензия 6.19.13-137136 от 19.12.2025: пеня за нарушение сроков 95 186,68 руб.",result:"Ответ от КА не поступал",status:"СЗ от 24.03.2026 в ЮУ. Находится в работе у специалиста",tag:"tag-orange"},
+      {c:"ООО «ЗГРАДА Монолит»",n:"СИБЭРСИБЭМ-24/4158",s:"102 375 000",d:"Электромонтажные работы по модернизации электрооборудования, бл. 8",claim:"Претензия 6.19.13-133340 от 11.12.2025: штраф + возмещение ущерба 74 000 руб.",result:"Согласительный ответ от 16.02.2026",status:"СЗ от 24.03.2026 в ЮУ. Находится в работе у специалиста",tag:"tag-orange"},
+      {c:"ООО «СтройМастер»",n:"СИБЭРСИБЭМ-24/3911",s:"3 602 695",d:"Установка и пуско-наладка системы пожарной сигнализации общежития стройгородка",claim:"Претензия 6.19.13-6281 от 27.01.2026: пени 522 516,15 руб.",result:"Ответ от КА не поступал",status:"СЗ от 20.03.2026 в ЮУ. Находится в работе у специалиста",tag:"tag-orange"},
+      {c:"ООО «Промстрой»",n:"СИБЭРСИБЭМ-22/2258",s:"252 250 000",d:"Модернизация ТВП, ПГВП и топочно-горелочных устройств котлоагрегата",claim:"Претензия 6.19.13-101698 от 01.10.2025: уведомление о зачёте 835 501,75 руб., пеня 14 803 998,25 руб.",result:"Ответ от КА не поступал",status:"<a href='https://kad.arbitr.ru/Card?number=%D0%9033-5751%2F2026' target='_blank' style='color:var(--cyan)'>Дело А33-5751/2026</a>. Предварительное заседание 30.04.2026",tag:"tag-red"},
+      {c:"ООО «СтройМастер»",n:"СИБЭРСИБЭМ-22/5729",s:"58 700 000",d:"СМР систем вентиляции и отопления блоков ст. №1 и ст. №8",claim:"Претензия 6.19.13-7659 от 29.01.2026: пеня за нарушение сроков 21 485 342,86 руб.",result:"Ответ КА от 19.02.2026 об исключении работ и продлении срока",status:"Куратор предоставил проект ответа КА. Отсутствие стройготовности со стороны АО «СибЭР»",tag:"tag-orange"},
+      {c:"ООО «КрасЭнергостройКомплекс»",n:"СИБЭРСИБЭМ-25/3601",s:"50 588 578",d:"СМР системы водяного и газового пожаротушения главного корпуса 100 МВт и 200 МВт",claim:"Претензия 6.19.13-21946 от 06.03.2026: пеня + штраф на сумму 5 058 857,83 руб.",result:"Не истёк срок для ответа контрагента",status:"Ожидание ответа КА в пределах претензионного срока",tag:"tag-blue"},
+      {c:"ООО «КС»",n:"СИБЭРСИБЭМ-25/5294",s:"82 788 000",d:"Электромонтажные работы по модернизации электрооборудования, бл. 7",claim:"Претензия 6.19.18-20333 от 03.03.2026: неотработанный аванс 17 812 243,67 руб.",result:"Не истёк срок для ответа контрагента",status:"Ожидание ответа КА в пределах претензионного срока",tag:"tag-blue"},
+      {c:"ООО «ЭСМ»",n:"СИБЭРСИБЭМ-24/4073",s:"53 040 000",d:"Электромонтажные работы по модернизации электрооборудования, бл. 8",claim:"Претензия 6.19.13-133349 от 11.12.2025: штраф + возмещение ущерба 148 000 руб. (за смарт-часы)",result:"Ответ от КА не поступал. СЗ в ЮС не поступала. Зачёта не было, предполагается выполнение.",status:"СЗ о проведении судебной работы в ЮС не поступала",tag:"tag-orange"},
+      {c:"ООО «Ерс-Энерго»",n:"СИБЭРСИБЭМ-25/4743",s:"114 561 389",d:"Электромонтажные работы по модернизации электрооборудования, бл. 5",claim:"Претензия 6.19.13-133354 от 11.12.2025: штраф + возмещение ущерба 74 000 руб.",result:"Произведён зачёт на 74 000 руб.",status:"Урегулировано. Зачёт произведён, исковая работа не требуется",tag:"tag-green"},
+    ]
+  },
+  lawsuits: {
+    title: "Инициированы иски",
+    items: [
+      {c:"ООО «Апекс Групп»",n:"СИБЭРСИБЭМ-24/4717",s:"119 862 181",case:"Дело А33-13916/2025 от 26.05.2025",kad:"А33-13916/2025",claim:"Взыскание неустойки 3 475 159,40 руб.",result:"Встречный иск удовлетворён: взыскано с АО «СибЭР» 2 158 363,10 руб. + 89 751 руб. госпошлина. Решение от 11.12.2025.",stage:"Апелляция: определением 3ААС АЖ принята к производству, заседание 23.04.2026",tag:"tag-red"},
+      {c:"ООО «СибЭнергоСтрой»",n:"СИБЭРСИБЭМ-25/3562",s:"132 540 925",case:"Дело А33-8199/2026 от 25.03.2026",kad:"А33-8199/2026",claim:"Возврат аванса и штрафной неустойки на 7 100 000 руб.",result:"",stage:"Предварительное судебное заседание назначено на 14.05.2026",tag:"tag-orange"},
+      {c:"ООО «СибЭнергоСтрой»",n:"СИБЭРСИБЭМ-25/3790",s:"85 575 022",case:"Дело А33-6895/2026 от 18.03.2026",kad:"А33-6895/2026",claim:"Возврат штрафа, аванса. Сумма иска уточняется.",result:"Определением от 16.03.2026 исковое заявление оставлено без движения",stage:"Необходимо устранить недостатки искового заявления",tag:"tag-red"},
+      {c:"ООО «СибЭнергоСтрой»",n:"СИБЭРСИБЭМ-25/3835",s:"12 471 833",case:"Дело А33-2422/2026 от 03.02.2026",kad:"А33-2422/2026",claim:"Штраф 24 943,67 руб. + пеня 3 508 575,88 руб.",result:"",stage:"Дата предварительного судебного заседания не назначена",tag:"tag-orange"},
+      {c:"ООО «Сэс»",n:"СИБЭРСИБЭМ-25/4480",s:"42 964 893",case:"Дело А33-2424/2026 от 02.02.2026",kad:"А33-2424/2026",claim:"Штраф 85 929,79 руб. + пеня 1 761 560,53 руб.",result:"",stage:"Предварительное судебное заседание назначено на 30.03.2026",tag:"tag-orange"},
+      {c:"ООО «Промстрой»",n:"СИБЭРСИБЭМ-22/2258",s:"252 250 000",case:"Дело А33-5751/2026 от 06.03.2026",kad:"А33-5751/2026",claim:"Взыскание пени 14 803 998,25 руб.",result:"",stage:"Предварительное судебное заседание назначено на 30.04.2026",tag:"tag-orange"},
+    ]
+  },
+  unresolved: {
+    title: "Спор не урегулирован, исковая работа не инициирована",
+    desc: "8 договоров, по которым претензия заявлена, но спор не разрешён и иск не подан. По 6 из них СЗ поступила в юридическое управление в марте 2026 года.",
+    items: [
+      {c:"ООО «СтройМастер»",n:"СИБЭРСИБЭМ-25/154",claim:"Пеня 1 750 192,53 руб.",status:"СЗ от 23.03.2026 в ЮУ, в работе у специалиста"},
+      {c:"ООО «АМА»",n:"СИБЭРСИБЭМ-25/4187",claim:"Штраф 281 864,37 руб.",status:"СЗ от 24.03.2026 в ЮУ, в работе у специалиста"},
+      {c:"ООО «ЗГРАДА Монолит»",n:"СИБЭРСИБЭМ-25/3660",claim:"Пеня 1 470 337,89 руб.",status:"СЗ от 20.03.2026 в ЮУ, в работе у специалиста"},
+      {c:"ООО «ЭМТ»",n:"СИБЭРСИБЭМ-25/5779",claim:"Пеня 95 186,68 руб.",status:"СЗ от 24.03.2026 в ЮУ, в работе у специалиста"},
+      {c:"ООО «ЗГРАДА Монолит»",n:"СИБЭРСИБЭМ-24/4158",claim:"Штраф + ущерб 74 000 руб.",status:"СЗ от 24.03.2026 в ЮУ, в работе у специалиста"},
+      {c:"ООО «СтройМастер»",n:"СИБЭРСИБЭМ-24/3911",claim:"Пени 522 516,15 руб.",status:"СЗ от 20.03.2026 в ЮУ, в работе у специалиста"},
+      {c:"ООО «СтройМастер»",n:"СИБЭРСИБЭМ-22/5729",claim:"Пеня 21 485 342,86 руб.",status:"Куратор предоставил проект ответа. Отсутствие стройготовности Заказчика"},
+      {c:"ООО «ЭСМ»",n:"СИБЭРСИБЭМ-24/4073",claim:"Штраф + ущерб 148 000 руб.",status:"СЗ о проведении судебной работы в ЮС не поступала"},
+    ]
+  },
+  settled: {
+    title: "Урегулировано в досудебном порядке (зачёт)",
+    items: [
+      {c:"ООО «ЗГРАДА Монолит»",n:"СИБЭРСИБЭМ-25/1402",claim:"Штраф + ущерб 222 000 руб.",result:"Произведён зачёт: уведомление №4058 от 21.01.2026 по с/ф №203 от 22.12.2025 на сумму 222 000 руб."},
+      {c:"ООО «Ерс-Энерго»",n:"СИБЭРСИБЭМ-25/4743",claim:"Штраф + ущерб 74 000 руб.",result:"Произведён зачёт на 74 000 руб. Исковая работа не требуется."},
+      {c:"ООО «ЭМТ»",n:"СИБЭРСИБЭМ-23/2363",claim:"Возмещение строительных лесов 11 246 376,97 руб.",result:"Частично возвращено имущество на 5 135 694,68 руб. (55%). Произведён частичный зачёт."},
+    ]
+  },
+  by_fact: {
+    title: "Закрыты по фактически выполненным объёмам",
+    desc: "35 договоров: работы приняты по фактическим объёмам, заключены ДС на приведение к факту. Необходимость в претензионной работе отсутствует, поскольку нарушение сроков компенсируется корректировкой объёмов.",
+    items: [
+      {c:"СП ООО «SHTET»",n:"СИБЭРСИБЭМ-25/748",s:"64 099 284",d:"Капитальный ремонт вспомогательного оборудования Приморской ГРЭС"},
+      {c:"СП ООО «SHARQTEHENERGOTA'MIR»",n:"СИБЭРСИБЭМ-25/2246",s:"43 048 287",d:"Капитальный ремонт турбоагрегата энергоблока"},
+      {c:"ООО «Техно-Сфера»",n:"СИБЭРСИБЭМ-25/6677",s:"7 440 931",d:"Нарушение отсутствует"},
+      {c:"ООО «СТРОЙТЭК»",n:"СИБЭРСИБЭМ-25/5835",s:"53 132 366",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «СМЦ»",n:"СИБЭРСИБЭМ-25/7073",s:"22 999 428",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «СМЦ»",n:"СИБЭРСИБЭМ-25/7074",s:"158 100 648",d:"Договор исполнен в необходимом объёме"},
+      {c:"СП ООО «SHARQTEHENERGOTA'MIR»",n:"СИБЭРСИБЭМ-24/5702",s:"93 824 284",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «Компания КрасЭнергостройКомплекс»",n:"СИБЭРСИБЭМ-25/3469",s:"184 689 346",d:"Нарушение отсутствует"},
+      {c:"ООО «СТРОТЭК»",n:"СИБЭРСИБЭМ-25/4869",s:"230 281 160",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «Энергосила»",n:"СИБЭРСИБЭМ-25/6540",s:"49 523 079",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «КЭМ»",n:"СИБЭРСИБЭМ-25/6239",s:"35 992 725",d:"Договор исполнен в необходимом объёме"},
+      {c:"ТОО «Карагандинский турбомеханический завод»",n:"СИБЭРСИБЭМ-25/5969",s:"3 252 000",d:"Договор исполнен в необходимом объёме"},
+      {c:"АО «Фирма Энергозащита»",n:"СИБЭРСИБЭМ-25/6516",s:"156 479 874",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «Декор»",n:"СИБЭРСИБЭМ-25/6243",s:"21 473 307",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «КЭМ»",n:"СИБЭРСИБЭМ-25/6577",s:"34 120 442",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «ПЭК»",n:"СИБЭРСИБЭМ-25/6517",s:"32 502 600",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «Энергосила»",n:"СИБЭРСИБЭМ-25/5151",s:"32 778 616",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «ЭИ»",n:"СИБЭРСИБЭМ-25/5820",s:"29 343 794",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «СИБПРОМ»",n:"СИБЭРСИБЭМ-25/7126",s:"32 068 224",d:"Нарушение отсутствует"},
+      {c:"ООО «Декор»",n:"СИБЭРСИБЭМ-25/8966",s:"12 659 682",d:"Договор исполнен в необходимом объёме"},
+      {c:"АО «КМУ ГИДРОМОНТАЖ»",n:"СИБЭРСИБЭМ-25/8237",s:"22 072 680",d:"Договор исполнен в необходимом объёме"},
+      {c:"АО «КМУ ГИДРОМОНТАЖ»",n:"СИБЭРСИБЭМ-25/8301",s:"14 503 022",d:"Договор исполнен в необходимом объёме"},
+      {c:"АО «СибИАЦ»",n:"СИБЭРСИБЭМ-25/934",s:"5 152 320",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «Декор»",n:"СИБЭРСИБЭМ-25/1701",s:"45 043 576",d:"Договор исполнен в необходимом объёме"},
+      {c:"АО «КМУ ГИДРОМОНТАЖ»",n:"СИБЭРСИБЭМ-25/580",s:"276 840 095",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «ВНХИ»",n:"СИБЭРСИБЭМ-25/1772",s:"21 204 179",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «АЛЬКАД»",n:"СИБЭРСИБЭМ-25/147",s:"9 821 770",d:"Договор исполнен в необходимом объёме"},
+      {c:"АО «КМУ ГИДРОМОНТАЖ»",n:"СИБЭРСИБЭМ-25/5143",s:"660 946",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «АЛЬКАД»",n:"СИБЭРСИБЭМ-25/2881",s:"7 640 410",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «Фар ист констракшн»",n:"СИБЭРСИБЭМ-25/3260",s:"1 201 220",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «КЭМ»",n:"СИБЭРСИБЭМ-25/626",s:"38 797 930",d:"Договор исполнен в необходимом объёме"},
+      {c:"АО «Красноярский ЭВРЗ»",n:"СИБЭРСИБЭМ-25/2992",s:"71 559 291",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «Декор»",n:"СИБЭРСИБЭМ-25/3872",s:"20 153 351",d:"Договор исполнен в необходимом объёме"},
+      {c:"АО «ХРМК»",n:"СИБЭРСИБЭМ-25/7593",s:"4 979 688",d:"Нарушение отсутствует"},
+      {c:"ООО «КХС»",n:"СИБЭРСИБЭМ-25/8181",s:"6 193 877",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «Профрезерв»",n:"СИБЭРСИБЭМ-25/8193",s:"37 752 007",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «Профрезерв»",n:"СИБЭРСИБЭМ-25/8686",s:"5 345 471",d:"Договор исполнен в необходимом объёме"},
+      {c:"ООО «КЭР»",n:"СИБЭРСИБЭМ-25/8570",s:"5 541 600",d:"Договор исполнен в необходимом объёме"},
+    ]
+  },
+  customer_fault: {
+    title: "Встречное неисполнение со стороны АО «СибЭР»",
+    desc: "17 договоров: нарушение сроков вызвано отсутствием стройготовности, несвоевременной передачей фронтов работ, изменениями проектной документации и иными обстоятельствами на стороне Заказчика.",
+    items: [
+      {c:"ООО «КХС»",n:"СИБЭРСИБЭМ-25/2912",s:"74 070 667",d:"Антикоррозийная защита, тепловая изоляция",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+      {c:"ООО «Декор»",n:"СИБЭРСИБЭМ-25/3912",s:"40 781 813",d:"Ремонт оборудования энергоблоков ст. №3, 6",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+      {c:"ООО «Гамма Интеграция»",n:"СИБЭРСИБЭМ-25/2241",s:"68 746 301",d:"СМР и ПНР систем противопожарной защиты, систем связи",reason:"Встречное неисполнение (отсутствовала стройготовность)"},
+      {c:"ООО «ИНКОМ»",n:"СИБЭРСИБЭМ-25/3871",s:"92 707 842",d:"Монтаж системы кондиционирования ГК200",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+      {c:"ООО «СТРОЙМАСТЕР»",n:"ММКС-24/187",s:"19 182 279",d:"Реконструкция противопожарных водопроводов энергоблока ст. №9",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+      {c:"ООО «СтройМастер»",n:"СИБЭРСИБЭМ-25/5401",s:"45 692 187",d:"Монтаж системы противопожарного трубопровода ГК",reason:"Встречное неисполнение (отсутствовала стройготовность)"},
+      {c:"АО «КМУ Гидромонтаж»",n:"СИБЭРСИБЭМ-25/6692",s:"52 961 554",d:"Монтаж металлоконструкций пристроя дымососного отделения",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+      {c:"ООО «Декор»",n:"СИБЭРСИБЭМ-25/6846",s:"143 743 133",d:"Антикоррозионная защита и тепловая изоляция",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+      {c:"ООО «АЛЬКАД»",n:"СИБЭРСИБЭМ-25/7358",s:"12 107 665",d:"Монтаж дымососов котлоагрегата энергоблока №7",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+      {c:"АО «СибИАЦ»",n:"СИБЭРСИБЭМ-25/7453",s:"9 200 247",d:"Химический контроль при водно-химической очистке",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+      {c:"ООО «ИНКОМ»",n:"СИБЭРСИБЭМ-25/8256",s:"977 546",d:"Монтаж системы вентиляции помещения АГП",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+      {c:"ООО «Алькад»",n:"СИБЭРСИБЭМ-23/2510",s:"36 283 683",d:"Устройство опорных ж/б конструкций",reason:"Встречное неисполнение, будет инициировано ДС на продление"},
+      {c:"ООО «ВЭМ»",n:"СИБЭРСИБЭМ-25/3606",s:"64 130 113",d:"Замена кубов ВЗП котлоагрегата 3A",reason:"Встречное неисполнение, будет инициировано ДС на продление"},
+      {c:"ООО «ВНХИ»",n:"СИБЭРСИБЭМ-25/1784",s:"28 167 024",d:"Антикоррозийная защита и тепловая изоляция газоходов",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+      {c:"ООО «ВНХИ»",n:"СИБЭРСИБЭМ-25/1260",s:"56 056 023",d:"Антикоррозионная защита и тепловая изоляция электрофильтра",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+      {c:"ООО «ФИК»",n:"СИБЭРСИБЭМ-24/4624",s:"10 181 343",d:"СМР и ПНР по монтажу системы вентиляции и кондиционирования",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+      {c:"ООО «ВЭМ»",n:"СИБЭРСИБЭМ-25/3604",s:"123 325 903",d:"Замена кубов ВЗП котлоагрегатов 2A и 2Б",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+      {c:"ООО «Декор»",n:"СИБЭРСИБЭМ-25/2599",s:"33 627 229",d:"Антикоррозийная защита, тепловая изоляция",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+      {c:"ООО «АЛЬКАД»",n:"СИБЭРСИБЭМ-25/3492",s:"122 877 040",d:"Изготовление, поставка и монтаж наружных газоходов энергоблока №3",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+      {c:"ООО «РЭР»",n:"СИБЭРСИБЭМ-25/3882",s:"6 281 381",d:"Ремонт вспомогательного оборудования",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+      {c:"ООО «ЭСМ»",n:"СИБЭРСИБЭМ-25/4969",s:"4 301 516",d:"ПНР систем пожарной автоматики, пожарной и охранной сигнализации",reason:"Просрочка в связи с встречным неисполнением (отсутствовала стройготовность)"},
+    ]
+  },
+  no_sz: {
+    title: "Отсутствует СЗ о проведении претензионной работы",
+    desc: "14 договоров: выявлены нарушения со стороны подрядчиков, однако от кураторов не поступили служебные записки о проведении претензионной работы с приложением подтверждающих документов.",
+    items: [
+      {c:"ООО «Энергосила»",n:"СИБЭРСИБЭМ-25/2245",s:"154 965 524",d:"Ремонт вспомогательного оборудования и элементов основного оборудования",reason:"Необходимо инициировать СЗ на претензионную работу"},
+      {c:"ООО «ДВСК»",n:"СИБЭРСИБЭМ-25/2778",s:"34 728 055",d:"Ремонт вспомогательного оборудования и элементов основного оборудования",reason:"Необходимо инициировать СЗ на претензионную работу"},
+      {c:"ООО «АМА»",n:"СИБЭРСИБЭМ-25/4188",s:"13 954 790",d:"Антикоррозийная защита, тепловая изоляция",reason:"Необходимо инициировать СЗ на претензионную работу"},
+      {c:"ООО «Энергосила»",n:"СИБЭРСИБЭМ-25/4229",s:"105 065 191",d:"Ремонт вспомогательного оборудования и элементов основного оборудования",reason:"Необходимо инициировать СЗ на претензионную работу"},
+      {c:"ООО «СтройМастер»",n:"СИБЭРСИБЭМ-25/2694",s:"39 180 000",d:"Реконструкция противопожарных водопроводов блоков №5, 7, 8",reason:"Необходимо инициировать СЗ на претензионную работу"},
+      {c:"ООО «ЭМТ»",n:"СИБЭРСИБЭМ-25/6100",s:"20 710 790",d:"Антикоррозийная защита и тепловая изоляция воздуховодов горячего воздуха",reason:"Необходимо инициировать СЗ на претензионную работу"},
+      {c:"ООО «ЭСМ»",n:"СИБЭРСИБЭМ-25/6515",s:"71 400 000",d:"Электромонтажные работы по модернизации электрооборудования",reason:"Необходимо инициировать СЗ на претензионную работу"},
+      {c:"ООО СП «МЭН»",n:"СИБЭРСИБЭМ-25/6601",s:"65 710 200",d:"Электромонтажные работы по модернизации электрооборудования",reason:"Необходимо инициировать СЗ на претензионную работу"},
+      {c:"АО «Фирма Энергозащита»",n:"СИБЭРСИБЭМ-25/6920",s:"144 999 594",d:"Антикоррозионная защита и монтаж тепловой изоляции",reason:"Необходимо инициировать СЗ на претензионную работу"},
+      {c:"ООО «СТРОЙТЭК»",n:"СИБЭРСИБЭМ-25/7832",s:"64 627 200",d:"Электромонтажные работы по модернизации электрооборудования",reason:"Необходимо инициировать СЗ на претензионную работу"},
+      {c:"ООО «ЭМТ»",n:"СИБЭРСИБЭМ-25/4948",s:"141 893 442",d:"Монтаж обмуровки и тепловой изоляции котлоагрегата",reason:"Необходимо инициировать СЗ на претензионную работу"},
+      {c:"ООО «ИНКОМ»",n:"СИБЭРСИБЭМ-25/6109",s:"6 079 728",d:"Монтаж системы кондиционирования помещения №65 АГП ТГ-3",reason:"Необходимо инициировать СЗ на претензионную работу"},
+      {c:"ООО «НПО Агростройсервис»",n:"СИБЭРСИБЭМ-24/4252",s:"67 986 000",d:"Разработка РД, поставка, шеф-монтаж, шеф-наладка",reason:"Необходимо инициировать СЗ на претензионную работу"},
+      {c:"ООО «ЭСМ»",n:"СИБЭРСИБЭМ-24/4823",s:"27 683 661",d:"Электромонтажные работы по модернизации электрооборудования",reason:"Необходимо инициировать СЗ на претензионную работу"},
+    ]
+  },
+  need_ds: {
+    title: "Необходимо инициировать ДС на увеличение объёмов и/или продление сроков",
+    desc: "10 договоров: фактические объёмы или сроки выполнения работ отличаются от договорных условий. Для корректного закрытия необходимо заключить дополнительные соглашения.",
+    items: [
+      {c:"ООО «ПСК Байс»",n:"СИБЭРСИБЭМ-24/2867",s:"237 904 661",d:"СМР по доведению до норматива Главного Корпуса 100 Приморской ГРЭС",reason:"Невыполнение 276 млн. Будет инициировано ДС на продление сроков"},
+      {c:"ООО «ПСК Байс»",n:"СИБЭРСИБЭМ-24/2859",s:"345 261 588",d:"СМР по устранению дефектов элементов каркаса",reason:"Невыполнение 283 млн. Будет инициировано ДС на продление сроков"},
+      {c:"ООО «КЭМ»",n:"СИБЭРСИБЭМ-25/158",s:"879 252 231",d:"Модернизация поверхностей нагрева котлоагрегата",reason:"Невыполнение 29,8 млн. Будет инициировано ДС на продление сроков"},
+      {c:"АО «СибИАЦ»",n:"СИБЭРСИБЭМ-25/2827",s:"91 920 880",d:"ПНР на энергоблоке №6 Приморской ГРЭС",reason:"Срок 28.02.2026. Решается вопрос о продлении"},
+      {c:"ООО «МПС»",n:"СИБЭРСИБЭМ-25/1766",s:"647 544 006",d:"Устройство кровельного покрытия главного корпуса",reason:"Невыполнение 565 млн. Будет инициировано ДС на продление сроков"},
+      {c:"ООО «СтройМастер»",n:"СИБЭРСИБЭМ-24/5066",s:"9 503 808",d:"Устройство хозяйственно-питьевого водопровода стройгородка",reason:"Невыполнение 1,3 млн. Будет инициировано ДС на продление сроков"},
+      {c:"ООО «МСК»",n:"СИБЭРСИБЭМ-25/8255",s:"13 559 998",d:"СМР по технологическому оборудованию дробильного корпуса",reason:"Невыполнение 10,2 млн. Будет инициировано ДС на продление сроков"},
+      {c:"ООО «Декор»",n:"СИБЭРСИБЭМ-25/6846",s:"143 743 133",d:"Антикоррозионная защита и монтаж тепловой изоляции",reason:"Невыполнение 82 млн. Будет инициировано ДС"},
+      {c:"ООО «АЛЬКАД»",n:"СИБЭРСИБЭМ-25/3492",s:"122 877 040",d:"Изготовление, поставка и монтаж наружных газоходов энергоблока №3",reason:"Невыполнение 23 млн. Будет инициировано ДС"},
+      {c:"ООО «Алькад»",n:"СИБЭРСИБЭМ-23/2510",s:"36 283 683",d:"Устройство опорных ж/б конструкций",reason:"Невыполнение 6,9 млн. Будет инициировано ДС на продление сроков"},
+    ]
+  },
+  prep_term: {
+    title: "Готовится расторжение по соглашению сторон",
+    desc: "1 договор находится в процессе подготовки соглашения о расторжении.",
+    items: [
+      {c:"ООО «Декор»",n:"СИБЭРСИБЭМ-25/6108",s:"44 181 928",d:"Антикоррозийная защита и тепловая изоляция воздуховодов горячего воздуха",reason:"Планируется расторжение договора по соглашению сторон"},
+    ]
+  }
+};
+
+function openModal(key) {
+  const d = DATA[key];
+  if (!d) return;
+
+  const overlay = document.getElementById('modalOverlay');
+  const title = document.getElementById('modalTitle');
+  const count = document.getElementById('modalCount');
+  const body = document.getElementById('modalBody');
+
+  title.textContent = d.title;
+
+  let html = '';
+
+  if (d.desc) {
+    html += '<p style="color:var(--text2);font-size:.88rem;margin-bottom:16px;line-height:1.6">' + d.desc + '</p>';
+  }
+
+  if (d.summary) {
+    count.textContent = d.summary.reduce((a,b) => a + b.count, 0) + ' дог.';
+    html += '<table class="mtable"><thead><tr><th>Категория</th><th style="text-align:right">Кол-во</th><th style="text-align:right">Доля</th></tr></thead><tbody>';
+    d.summary.forEach(s => {
+      html += `<tr><td><span class="status-tag ${s.tag}">${s.label}</span></td><td style="text-align:right;font-weight:600;font-size:1.1rem">${s.count}</td><td style="text-align:right;color:var(--text3)">${s.pct}</td></tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  if (d.items) {
+    count.textContent = d.items.length + ' дог.';
+
+    // Check what type of items
+    if (d.items[0] && d.items[0].case) {
+      // Lawsuits
+      html += '<table class="mtable"><thead><tr><th>Контрагент / Договор</th><th>Дело / Требование</th><th>Стадия</th></tr></thead><tbody>';
+      d.items.forEach(i => {
+        const kadLink = i.kad ? `<a href="https://kad.arbitr.ru/Card?number=${encodeURIComponent(i.kad)}" target="_blank" rel="noopener" style="color:var(--cyan);text-decoration:none;border-bottom:1px dashed var(--cyan)">${i.case}</a>` : i.case;
+        html += `<tr>
+          <td><div class="contractor">${i.c}</div><div class="contract-num">${i.n}</div><div class="detail">Сумма договора: ${i.s} руб.</div></td>
+          <td><div class="contract-num">${kadLink}</div><div class="detail">${i.claim}</div>${i.result ? '<div class="detail" style="margin-top:4px;color:var(--red)">' + i.result + '</div>' : ''}</td>
+          <td><span class="status-tag ${i.tag}">${i.stage}</span></td>
+        </tr>`;
+      });
+      html += '</tbody></table>';
+    } else if (d.items[0] && d.items[0].claim && d.items[0].status) {
+      // Claims with full detail
+      html += '<table class="mtable"><thead><tr><th>Контрагент / Договор</th><th>Претензия</th><th>Статус</th></tr></thead><tbody>';
+      d.items.forEach(i => {
+        html += `<tr>
+          <td><div class="contractor">${i.c}</div><div class="contract-num">${i.n}</div>${i.s ? '<div class="detail">Сумма: ' + i.s + ' руб.</div>' : ''}${i.d ? '<div class="detail">' + i.d + '</div>' : ''}</td>
+          <td><div class="detail">${i.claim}</div>${i.result ? '<div class="detail" style="margin-top:4px">' + i.result + '</div>' : ''}</td>
+          <td><span class="status-tag ${i.tag || ''}">${i.status}</span></td>
+        </tr>`;
+      });
+      html += '</tbody></table>';
+    } else if (d.items[0] && d.items[0].claim && d.items[0].result) {
+      // Settled
+      html += '<table class="mtable"><thead><tr><th>Контрагент / Договор</th><th>Претензия</th><th>Результат</th></tr></thead><tbody>';
+      d.items.forEach(i => {
+        html += `<tr>
+          <td><div class="contractor">${i.c}</div><div class="contract-num">${i.n}</div></td>
+          <td class="detail">${i.claim}</td>
+          <td><span class="status-tag tag-green">${i.result}</span></td>
+        </tr>`;
+      });
+      html += '</tbody></table>';
+    } else if (d.items[0] && d.items[0].reason) {
+      // Items with reason column
+      html += '<table class="mtable"><thead><tr><th>Контрагент / Договор</th><th>Сумма, руб.</th><th>Причина / Статус</th></tr></thead><tbody>';
+      d.items.forEach(i => {
+        html += `<tr>
+          <td><div class="contractor">${i.c}</div><div class="contract-num">${i.n}</div>${i.d ? '<div class="detail">' + i.d + '</div>' : ''}</td>
+          <td style="white-space:nowrap">${i.s || ''}</td>
+          <td><span class="detail">${i.reason || ''}</span></td>
+        </tr>`;
+      });
+      html += '</tbody></table>';
+    } else {
+      // Simple list
+      html += '<table class="mtable"><thead><tr><th>Контрагент</th><th>Договор</th><th>Сумма, руб.</th><th>Предмет</th></tr></thead><tbody>';
+      d.items.forEach(i => {
+        html += `<tr>
+          <td class="contractor">${i.c}</td>
+          <td><div class="contract-num">${i.n}</div></td>
+          <td style="white-space:nowrap">${i.s || ''}</td>
+          <td class="detail">${i.d || ''}</td>
+        </tr>`;
+      });
+      html += '</tbody></table>';
+    }
+  }
+
+  if (!d.items && !d.summary && d.desc) {
+    count.textContent = '';
+  }
+
+  body.innerHTML = html;
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if(e.key === 'Escape') { closeModal(); closeSearch(); }});
+document.addEventListener('click', e => { if(!e.target.closest('.search-wrap')) closeSearch(); });
+
+// SEARCH
+function buildSearchIndex() {
+  const index = [];
+  const catLabels = {
+    claims: {name:'Претензионно-исковая',cls:'tag-red'},
+    completed: {name:'Исполнен без нарушений',cls:'tag-green'},
+    terminated: {name:'Расторгнут',cls:'tag-purple'},
+    active: {name:'Действующий без нарушений',cls:'tag-blue'},
+    by_fact: {name:'Закрыт по факту',cls:'tag-green'},
+    customer_fault: {name:'Вина заказчика',cls:'tag-orange'},
+    no_sz: {name:'Нет СЗ',cls:'tag-red'},
+    need_ds: {name:'Необходимо ДС',cls:'tag-blue'},
+    prep_term: {name:'Расторжение',cls:'tag-purple'},
+    lawsuits: {name:'Иск подан',cls:'tag-red'},
+    unresolved: {name:'Спор не урегулирован',cls:'tag-orange'},
+    settled: {name:'Зачёт',cls:'tag-green'},
+  };
+
+  for (const [key, d] of Object.entries(DATA)) {
+    if (!d.items) continue;
+    const cat = catLabels[key] || {name:key,cls:''};
+    d.items.forEach(i => {
+      const contractor = i.c || '';
+      const contract = i.n || '';
+      const detail = i.d || i.claim || i.case || '';
+      const amount = i.s || '';
+      index.push({
+        contractor, contract, detail, amount,
+        catName: cat.name, catCls: cat.cls,
+        modalKey: key,
+        searchText: (contractor + ' ' + contract + ' ' + detail).toLowerCase()
+      });
+    });
+  }
+  return index;
+}
+
+const SEARCH_INDEX = buildSearchIndex();
+
+function doSearch(query) {
+  const box = document.getElementById('searchResults');
+  const q = query.trim().toLowerCase();
+  if (q.length < 2) { box.classList.remove('active'); return; }
+
+  const terms = q.split(/\s+/);
+  const matches = SEARCH_INDEX.filter(item =>
+    terms.every(t => item.searchText.includes(t))
+  ).slice(0, 20);
+
+  if (matches.length === 0) {
+    box.innerHTML = '<div class="sr-empty">Ничего не найдено</div>';
+  } else {
+    box.innerHTML = matches.map(m => `
+      <div class="sr-item" onclick="closeSearch();openModal('${m.modalKey}')">
+        <div class="sr-contractor">${highlight(m.contractor, terms)}</div>
+        <div class="sr-contract">${highlight(m.contract, terms)}</div>
+        <span class="sr-category ${m.catCls}">${m.catName}</span>
+        ${m.amount ? '<span style="font-size:.72rem;color:var(--text3);margin-left:8px">' + m.amount + ' руб.</span>' : ''}
+        ${m.detail ? '<div class="sr-detail">' + m.detail.substring(0,100) + '</div>' : ''}
+      </div>
+    `).join('');
+  }
+  box.classList.add('active');
+}
+
+function highlight(text, terms) {
+  let result = text;
+  terms.forEach(t => {
+    if (t.length < 2) return;
+    const re = new RegExp('(' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+    result = result.replace(re, '<mark style="background:var(--gold-bg);color:var(--gold);padding:0 2px;border-radius:2px">$1</mark>');
+  });
+  return result;
+}
+
+function closeSearch() {
+  document.getElementById('searchResults').classList.remove('active');
+}
+</script>
+</body>
+</html>
