@@ -2,7 +2,15 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a1d27">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Претензии ДПМ">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>Претензионная работа СибЭМ — Приморская ГРЭС 2025</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -88,6 +96,39 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
   .level-wrap{flex-direction:column;gap:12px}
   .side-group{flex-direction:row;flex-wrap:wrap;justify-content:center}
   .sblock{min-width:140px}
+}
+@media(max-width:600px){
+  body{-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+  .header{padding:24px 16px 14px;padding-top:calc(24px + env(safe-area-inset-top))}
+  .header h1{font-size:1.15rem}
+  .header .sub{font-size:.82rem}
+  .container{padding:0 10px 40px}
+  .fblock{padding:14px 16px}
+  .fblock .num{font-size:1.8rem}
+  .fblock .label{font-size:.78rem}
+  .fblock .sum-label{font-size:.66rem}
+  .fblock.level0,.fblock.level1,.fblock.level2{max-width:100%}
+  .level-wrap{gap:8px}
+  .side-group{gap:6px}
+  .sblock{min-width:120px;padding:10px 12px;gap:8px}
+  .sblock .snum{font-size:1.2rem;min-width:28px}
+  .sblock .slabel{font-size:.7rem}
+  .result-row{gap:8px}
+  .rblock{padding:12px 14px;min-width:100px}
+  .rblock .rnum{font-size:1.4rem}
+  .rblock .rlabel{font-size:.72rem}
+  .connector{height:20px}
+  .modal{border-radius:12px;max-height:90vh}
+  .modal-header{padding:14px 16px}
+  .modal-header h2{font-size:.95rem}
+  .modal-body{padding:12px 14px 18px}
+  .mtable{font-size:.74rem}
+  .mtable th{padding:6px 6px;font-size:.65rem}
+  .mtable td{padding:8px 6px}
+  .search-wrap{max-width:100%;margin:12px auto 0}
+  .search-input{padding:10px 14px 10px 38px;font-size:.85rem}
+  .legend{gap:10px;margin-top:20px;padding-top:14px}
+  .legend-item{font-size:.68rem}
 }
 
 /* SECTION TITLE */
@@ -720,6 +761,11 @@ function highlight(text, terms) {
 
 function closeSearch() {
   document.getElementById('searchResults').classList.remove('active');
+}
+
+// PWA: Register Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
 }
 </script>
 </body>
